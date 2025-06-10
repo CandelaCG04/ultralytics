@@ -8,11 +8,14 @@
 nc: 80 # number of classes
 scales: # model compound scaling constants, i.e. 'model=yolo11n.yaml' will call yolo11.yaml with scale 'n'
   # [depth, width, max_channels]
-  n: [0.50, 0.25, 1024] # summary: 181 layers, 2624080 parameters, 2624064 gradients, 6.6 GFLOPs
-  s: [0.50, 0.50, 1024] # summary: 181 layers, 9458752 parameters, 9458736 gradients, 21.7 GFLOPs
-  m: [0.50, 1.00, 512] # summary: 231 layers, 20114688 parameters, 20114672 gradients, 68.5 GFLOPs
-  l: [1.00, 1.00, 512] # summary: 357 layers, 25372160 parameters, 25372144 gradients, 87.6 GFLOPs
-  x: [1.00, 1.50, 512] # summary: 357 layers, 56966176 parameters, 56966160 gradients, 196.0 GFLOPs
+  p: [0.50, 0.125, 1024] #summary: 181 layers, 858,832 parameters, 858,816 gradients,
+          # Simplified bottleneck: (fused) 89 layers, 812,680 parameters, 31,920 gradients
+  n: [0.50, 0.25, 1024] # summary: 181 layers, 2,624,080 parameters, 2,624,064 gradients, 6.6 GFLOPs
+          # Simplified bottleneck:
+  s: [0.50, 0.50, 1024] # summary: 181 layers, 9,458,752 parameters, 9,458,736 gradients, 21.7 GFLOPs
+  m: [0.50, 1.00, 512] # summary: 231 layers, 20,114,688 parameters, 20,114,672 gradients, 68.5 GFLOPs
+  l: [1.00, 1.00, 512] # summary: 357 layers, 2,5372,160 parameters, 25,372,144 gradients, 87.6 GFLOPs
+  x: [1.00, 1.50, 512] # summary: 357 layers, 56,,966,176 parameters, 56,966,160 gradients, 196.0 GFLOPs
 
 # YOLO11n backbone
 backbone:

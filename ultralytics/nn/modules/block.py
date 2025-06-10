@@ -495,6 +495,33 @@ class Bottleneck(nn.Module):
         return x + self.cv2(self.cv1(x)) if self.add else self.cv2(self.cv1(x))
 
 
+#My code:
+class Bottleneck1Conv(nn.Module):
+    """Simplified bottleneck with just 1 convolution."""
+
+    def __init__(
+        self, c1: int, c2: int, shortcut: bool = True, g: int = 1, k: Tuple[int, int] = (3, 3), e: float = 0.5
+    ):
+        """
+        Initialize a standard bottleneck module.
+
+        Args:
+            c1 (int): Input channels.
+            c2 (int): Output channels.
+            shortcut (bool): Whether to use shortcut connection.
+            g (int): Groups for convolutions.
+            k (tuple): Kernel sizes for convolutions.
+            e (float): Expansion ratio.
+        """
+        super().__init__()
+        self.cv = Conv(c1, c2, k[0], 1, g=g)
+        self.add = shortcut and c1 == c2
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Apply bottleneck with optional shortcut connection."""
+        return x + self.cv(x) if self.add else self.cv(x)
+
+
 class BottleneckCSP(nn.Module):
     """CSP Bottleneck https://github.com/WongKinYiu/CrossStagePartialNetworks."""
 
@@ -1124,7 +1151,7 @@ class C3k2(C2f):
         """
         super().__init__(c1, c2, n, shortcut, g, e)
         self.m = nn.ModuleList(
-            C3k(self.c, self.c, 2, shortcut, g) if c3k else Bottleneck(self.c, self.c, shortcut, g) for _ in range(n)
+            C3k(self.c, self.c, 2, shortcut, g) if c3k else Bottleneck1Conv(self.c, self.c, shortcut, g) for _ in range(n) #My code, changed from Bottleneck --> Bottleneck1Conv
         )
 
 
@@ -1147,7 +1174,7 @@ class C3k(C3):
         super().__init__(c1, c2, n, shortcut, g, e)
         c_ = int(c2 * e)  # hidden channels
         # self.m = nn.Sequential(*(RepBottleneck(c_, c_, shortcut, g, k=(k, k), e=1.0) for _ in range(n)))
-        self.m = nn.Sequential(*(Bottleneck(c_, c_, shortcut, g, k=(k, k), e=1.0) for _ in range(n)))
+        self.m = nn.Sequential(*(Bottleneck1Conv(c_, c_, shortcut, g, k=(k, k), e=1.0) for _ in range(n))) #My code changed bottleneck-->bottleneck1conv
 
 
 class RepVGGDW(torch.nn.Module):
